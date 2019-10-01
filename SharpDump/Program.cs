@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
@@ -133,6 +133,23 @@ namespace SharpDump
             {
                 Console.WriteLine(String.Format("[X] Dump failed: {0}", bRet));
             }
+        }
+        public static string MiniDump()
+        {
+            MemoryStream stream = new MemoryStream();
+            StreamWriter sw = new StreamWriter(stream);
+            TextWriter old_stdout = Console.Out;
+            Console.SetOut(sw);
+
+            /* hard coded command line arguments */
+            string[] args = "all".Split(null);
+            Main(args);
+
+            Console.SetOut(old_stdout);
+            sw.Flush();
+            string output = Encoding.ASCII.GetString(stream.ToArray());
+            sw.Close();
+            return output;
         }
 
         static void Main(string[] args)
